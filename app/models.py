@@ -79,7 +79,37 @@ class RecipeMenu(models.Model):
 
 
 class Cart(models.Model):
-    pass
+    owner = models.ForeignKey(Buyer, on_delete=models.SET_NULL, null=True, blank=True)
+    sum = models.FloatField(null=True, blank=True)
+    date_ordered = models.DateTimeField(auto_now_add=True)
+    complete = models.BooleanField(default=False)
+    transaction_id = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return str(self.transaction_id)
+
+    @property
+    def get_cart_total(self):
+        cart_items = self.cartitem_set.all()
+        total = sum([item.get_total for item in cart_items])
+        return total
+
+    @property
+    def get_cart_items(self):
+        cart_items = self.cartitem_set.all()
+        return cart_items.count()
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def get_total(self):
+        total = self.recipe.price * self.quantity
+        return total
 
 
 class ShippingAddress(models.Model):
