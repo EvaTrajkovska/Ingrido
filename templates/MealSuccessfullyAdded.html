@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meal Successfully Added</title>
+
+</head>
+<body>
+{% extends 'HomePage.html' %}
+{% load static %}
+{% block content %}
+
+            <div class="col-8 offset-2" style="background-color: #FAF1E6; border-radius: 20px; margin-top: 40px; padding-bottom: 60px">
+     <div class="image-text">
+        <h3 style="font-size: 80px; font-family: 'Eras Bold ITC', serif; font-style: oblique ">
+            MEAL ADDED SUCCESSFULLY</h3>
+      </div>
+            <a  class="col-4 offset-4 btn btn-outline-dark"  href="{% url 'home' %}">&#x2190; Add Another Meal</a>
+            </div>
+
+{% endblock %}
+</body>
+</html>
