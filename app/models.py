@@ -1,5 +1,4 @@
 import datetime
-
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -125,3 +124,15 @@ class ShippingAddress(models.Model):
 
     def __str__(self):
         return self.address
+
+
+class RecipeIngredient(models.Model):
+    pass
+
+
+class RecipeNotIncluded(models.Model):
+    pass
+
+
+class RecipeNutrientsChart(models.Model):
+    pass
