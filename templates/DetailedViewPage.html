@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe</title>
+</head>
+<body>
+{% extends 'HomePage.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="container-fluid prof">
+<div class="card mb-10 profile" style="background-color: #FDFAF6; border: none">
+  <div class="row g-0">
+    <div class="col-lg-6 ">
+      <img src="{{ product.pic.url }}" class="img-fluid rounded-start" alt="Image" style="width: 60%; height: 100%">
+    </div>
+    <div class="col-lg-6">
+      <div class="card-body info">
+        <h2 class="card-title">  {{ product.name }}</h2>
+          <h5 class="card-text"> {{ product.subheading }} </h5>
+        <p class="card-text">    {{ product.description }}</p>
+
+
+          <div class="row ">
+          <div class="col-lg-6">
+            <div class="card" style=" margin: 0; border: none">
+              <div class="card-body" >
+                <h5 class="card-title" >Total Time: {{ product.total_time }}</h5>
+              </div>
+            </div>
+          </div>
+                      <div class="col-lg-6">
+            <div class="card" style=" margin: 0;border: none">
+              <div class="card-body" >
+                <h5 class="card-title" >Allergens: {{ product.allergens }}</h5>
+              </div>
+            </div>
+          </div>
+            </div>
+          <div class="row">
+          <div class="col-lg-6">
+            <div class="card" style=" margin: 0;border: none">
+              <div class="card-body" >
+                <h5 class="card-title">Difficulty: {{ product.difficulty }}</h5>
+              </div>
+            </div>
+          </div>
+                      <div class="col-lg-6">
+            <div class="card" style=" margin: 0;border: none">
+              <div class="card-body" >
+                <h5 class="card-title">Tags: {{ product.tags }}</h5>
+              </div>
+            </div>
+          </div>
+            </div>
+          <div style="display: flex; flex-direction: row-reverse; margin-right: 120px">
+                    <button style="width: 30%; background-color: #064420; border-radius: 9px; color: #FDFAF6;" id="addToCart" data-product="{{ product.id }}" data-action="add" class=" btn add-btn " >Order this meal >></button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+
+
+    <div class="container-fluid col-11" >
+    <div class="row col-11" style="padding: 40px 0 20px 0">
+    <div class="col-lg-6">
+    <h3 style="color: #064420;  font-family: 'Eras Bold ITC',serif ; font-size: 35px;">Ingredients</h3>
+        {% for i in ingredients %}
+                <div class="col-lg-5" style="display: inline-table">
+                <ul><li>
+           <p class="col-lg-6" style="font-size: 20px; font-weight: bold; display: inline-table">{{ i.ingredients.name }}</p>
+                </li> </ul>
+                </div>
+        {% endfor %}
+    </div>
+    <div class="col-lg-5 offset-1" style="background-color: #FAF1E6;">
+        <br>
+        <h4>Nutrition Values</h4>
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Energy (kJ)</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.energy }} kJ</h6>
+            </div>
+        </div>
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Calories</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.calories }} kcal</h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Fat</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.fat }} g</h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Saturated Fat</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.saturated_fat }} g</h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Carbohydrate</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.carbs }} g</h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Sugar</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.sugar }} g</h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Dietary Fibre</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.fiber }} g</h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Protein</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.protein }} g</h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Cholesterol</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.cholesterol }} mg</h6>
+            </div>
+        </div>
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Sodium</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ chart.nutrients_chart.sodium }} mg</h6>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    </div>
+    <div class="container-fluid col-11">
+        <h3 style="color: #064420;  font-family: 'Eras Bold ITC',serif ; font-size: 35px; text-align: center;">Things you will need that are not </h3>
+            <h3 style="color: #064420;  font-family: 'Eras Bold ITC',serif ; font-size: 35px; text-align: center;"> included in your delivery</h3>
+        <div class="row">
+        {% for n in nots %}
+  <div class="col-lg-4">
+    <div class="card" style="border: none">
+      <div class="card-body" >
+        <h5 class="card-title" style="text-align: center">{{ n.other.name }}</h5>
+      </div>
+    </div>
+  </div>
+        {% endfor %}
+    </div>
+    </div>
+{% endblock content %}
+
+</body>
+</html>
