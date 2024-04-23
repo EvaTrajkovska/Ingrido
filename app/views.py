@@ -4,7 +4,10 @@ from django.shortcuts import render
 from django.template.defaulttags import register
 from .models import *
 
-
+def home(request):
+    qs = Menu.objects.all()
+    context = {"menus": qs, }
+    return render(request, "HomePage.html", context)
 def menu(request):
     menuId = request.session['menuId']
     menu = Menu.objects.get(id=menuId)
