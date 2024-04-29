@@ -8,6 +8,17 @@ def home(request):
     qs = Menu.objects.all()
     context = {"menus": qs, }
     return render(request, "HomePage.html", context)
+def cart(request):
+    if request.user.is_authenticated:
+        owner = request.user.buyer
+        order, created = Cart.objects.get_or_create(owner=owner, complete=False)
+        items = order.cartitem_set.all()
+    else:
+        items = []
+        order = {'get_cart_total': 0, 'get_cart_items': 0}
+
+    context = {'items': items, 'order': order}
+    return render(request, "cart/cart.html", context)
 def menu(request):
     menuId = request.session['menuId']
     menu = Menu.objects.get(id=menuId)
@@ -106,3 +117,7 @@ def insertRecipe(request):
 
     context = {"notIncl": notIncluded, "ingredients": ingredients, "menus": menus}
     return render(request, "InsertRecipe.html", context=context)
+
+
+def success(request):
+    return render(request, "cart/PaymentSuccess.html")
