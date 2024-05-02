@@ -26,6 +26,11 @@ def menu(request):
     context = {"recipes": qs, "menu": menu}
     return render(request, "Menu.html", context)
 
+def go_to_detailed_view(request):
+    data = json.loads(request.body)
+    productId = data['productId']
+    request.session['productId'] = productId
+    return JsonResponse("Got to detail page", safe=False)
 
 def go_to_detailed_view_menu(request):
     data = json.loads(request.body)
