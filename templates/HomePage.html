@@ -1,0 +1,254 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+   <script type="text/javascript">
+        let user = '{{ request.user }}'
+
+        function getToken(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getToken('csrftoken');
+    </script>
+    <title>Home</title>
+    <style>
+        body {
+            background: #FDFAF6;
+        }
+
+        .bg-image {
+            height: 700px;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            display: grid;
+        }
+
+        .image-text {
+            text-align: center;
+            color: #064420;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .container {
+            padding-top: 30px;
+            display: grid;
+            justify-content: center;
+            padding-bottom: 50px;
+
+        }
+
+        .footer {
+            background: #E4EFE7;
+            color: #064420;
+            justify-content: center;
+            padding-top: 20px;
+            height: 240px;
+            display: flex;
+            margin-bottom: -10px;
+            margin-top: 50px;
+        }
+
+        .card-body {
+            background: #FDFAF6;
+
+        }
+
+        .card {
+            outline: 10px;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg" style="background: none; padding: 0">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'images/Untitled design.png' %}" alt="" width="100" height="100">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav col-4 offset-1">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#" style="color: #064420"><h5>How It Works?</h5></a>
+                </li>
+                <li class="nav-item offset-1">
+                    <a class="nav-link" href="#" style="color: #064420"><h5>Meal Plans</h5></a>
+                </li>
+                <li class="nav-item offset-1">
+                    <a class="nav-link" href="#" style="color: #064420"><h5>Menus</h5></a>
+                </li>
+            </ul>
+            <a href="http://127.0.0.1:8000/insert_recipe" class="navbar-brand col-1 offset-3">
+                <button id="form-button" class="btn btn-outline-success " style="width: fit-content" type="submit"> Save Meal </button>
+            </a>
+            <a class="navbar-brand col-1 " href="{% url 'cart' %}">
+                <img src="{% static 'images/vecteezy_shopping-cart-icon-shopping-basket-on-transparent_19787018_516.png' %}"
+                     alt="" width="50" height="30">
+            </a>
+            <a class="navbar-brand col-1 " href="#">
+                <img src="{% static 'images/account.png' %}" alt="" width="35" height="35" style="border-radius: 17px">
+            </a>
+        </div>
+    </div>
+</nav>
+    <hr style="height: 2px; margin: 0; opacity: 20%;">
+
+{% block content %}
+<div class="container-fluid bg-image" style="
+        background-image: url('{% static 'images/pexels-ella-olsson-1640774.jpg' %}')"><p></p>
+    <div class="image-text">
+        <h3 style="font-size: 100px; font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace">
+            LET'S COOK</h3>
+        <h1 style=" font-size: 100px; font-family: 'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace">
+            TOGETHER</h1>
+    </div>
+</div>
+
+<div class="container" style="padding-top: 20px">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for menu in menus %}
+            <div class="col">
+                <a href="{% url 'menu' %}">
+                    <div class="card h-100">
+                        <img src="{{ menu.img.url }}"
+                             data-product="{{ menu.id }}" class="card-img-top menu" alt="..." style="height: 250px; width: 350px" >  <a/>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+
+
+    </div>
+
+
+</div>
+
+
+<div class="container-fluid" style="background: #FAF1E6; height: 420px">
+    <div class="container">
+        <div class="card mb-4" style="background:#FAF1E6; color:#064420;  border: none">
+            <div class="row no-gutters">
+                <div class="col-md-6">
+                    <img class="card-img" src="{% static 'images/box.jpg' %}" alt="Card image">
+                </div>
+                <div class="card-body col-md-4 offset-1"
+                     style="background:#FAF1E6; color:#064420; align-items: center  ">
+                    <h2 class="card-title"><i>What's inside each box?</i></h2>
+                    <br>
+                    <p class="card-text">✓ Easy-to-follow recipes with clear nutritional info</p>
+                    <p class="card-text">✓ High-quality ingredients sourced straight from the farm</p>
+                    <p class="card-text">✓ Convenient meal kits that fit perfectly in the fridge</p>
+                    <p class="card-text">✓ A fun cooking experience that makes you feel unstoppable</p>
+                    <p class="card-text">✓ Innovative packaging designed to reduce waste</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <h1 class="image-text" style="height: 100px">FAQ</h1>
+    <div class="cont" style="display: inline-flex; justify-content: space-between;color: #064420;">
+        <p class="col-6 offset-2" style="font-size: 20px">? Does every meal come with a step by step recipe?</p>
+        <p class="col-6 offset-2" style="font-size: 20px">? How do I get nutrition & calorie information about every
+            meal?</p>
+    </div>
+
+    <div class="cont" style="display: inline-flex; color: #064420;">
+        <p class="col-6 offset-4" style="font-size: 20px">? How much does it cost?</p>
+        <p class="col-7 offset-9" style="font-size: 20px">? How do I recycle my meal-kit box?</p>
+    </div>
+</div>
+{% endblock content %}
+
+<div class="footer">
+    <div class="card mb-4"
+         style=" background: #E4EFE7;border: none; width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
+        <div class="title">
+            <h5>Our Company</h5>
+        </div>
+        <div class="card-body" style=" background: #E4EFE7;">
+            <p class="card-text">Sustainability</p>
+            <p class="card-text">Careers</p>
+            <p class="card-text">Press</p>
+
+        </div>
+    </div>
+    <div class="card mb-4"
+         style="background: #E4EFE7;border: none; width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
+        <div class="title">
+            <h5>Contact Us</h5>
+        </div>
+        <div class="card-body" style=" background: #E4EFE7;">
+            <p class="card-text">Help Center</p>
+            <p class="card-text">Partnership Inquiries</p>
+            <p class="card-text">Information</p>
+
+        </div>
+    </div>
+
+    <div class="card mb-4"
+         style="background: #E4EFE7;border: none;width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
+        <div class="title">
+            <h5>Payment Methods</h5>
+        </div>
+        <div class="card-body" style=" background: #E4EFE7;">
+            <p class="card-text"><img src="{% static 'images/PYPL-3570673e.png' %}" height="10%" width="15%"> <img
+                    src="{% static 'images/visa-and-mastercard-logo-26.png' %}" height="50%" width="55%"></p>
+        </div>
+    </div>
+    <div class="card mb-4"
+         style="background: #E4EFE7;border: none;width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
+        <div class="title">
+            <h5>Download Our App</h5>
+        </div>
+        <div class="card-body" style=" background: #E4EFE7;">
+            <p class="card-text"><img src="{% static 'images/GooglePlay.png' %}" height="50%" width="45%"> <img
+                    src="{% static 'images/AppStore.png' %}" height="50%" width="45%"></p>
+        </div>
+    </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+
+</body>
+</html>
