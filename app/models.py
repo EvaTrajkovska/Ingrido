@@ -1,6 +1,8 @@
 import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
+
 
 
 class Buyer(models.Model):
@@ -69,6 +71,27 @@ class Recipe(models.Model):
         return str(self.name)
 
 
+class RecipeNutrientsChart(models.Model):
+    nutrients_chart = models.ForeignKey(NutrientsChart, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+
+class RecipeIngredient(models.Model):
+    ingredients = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f' {self.recipe} + " " +  {self.ingredients} '
+
+
+class RecipeNotIncluded(models.Model):
+    other = models.ForeignKey(NotIncluded, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.recipe)
+
+
 class RecipeMenu(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
@@ -126,13 +149,3 @@ class ShippingAddress(models.Model):
         return self.address
 
 
-class RecipeIngredient(models.Model):
-    pass
-
-
-class RecipeNotIncluded(models.Model):
-    pass
-
-
-class RecipeNutrientsChart(models.Model):
-    pass
