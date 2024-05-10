@@ -21,7 +21,7 @@ from django.urls import path
 from app.views import *
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+                  path('admin/', admin.site.urls),
                   path('home/', home, name="home"),
                   path('', home, name="home"),
                   path('menu/', menu, name="menu"),
@@ -34,4 +34,4 @@ urlpatterns = [
                   path('process_order/', processOrder, name='processOrder'),
                   path('insert_recipe/', insertRecipe, name='insertRecipe'),
                   path('success/', success, name='paymentSuccessful')
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

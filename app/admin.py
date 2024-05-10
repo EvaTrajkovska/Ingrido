@@ -17,7 +17,6 @@ admin.site.register(RecipeNotIncluded)
 admin.site.register(RecipeNutrientsChart)
 
 
-
 class RecipeMenuAdmin(admin.TabularInline):
     model = RecipeMenu
     extra = 0
@@ -41,4 +40,3 @@ class RecipeNutrientsChartAdmin(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [RecipeIngredientAdmin, RecipeNotIncludedAdmin, RecipeNutrientsChartAdmin, RecipeMenuAdmin]
     list_display = ("name",)
-

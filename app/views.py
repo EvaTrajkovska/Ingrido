@@ -4,10 +4,13 @@ from django.shortcuts import render
 from django.template.defaulttags import register
 from .models import *
 
+
 def home(request):
     qs = Menu.objects.all()
     context = {"menus": qs, }
     return render(request, "HomePage.html", context)
+
+
 def cart(request):
     if request.user.is_authenticated:
         owner = request.user.buyer
@@ -19,6 +22,7 @@ def cart(request):
 
     context = {'items': items, 'order': order}
     return render(request, "cart/cart.html", context)
+
 
 def checkout(request):
     if request.user.is_authenticated:
@@ -41,17 +45,20 @@ def menu(request):
     context = {"recipes": qs, "menu": menu}
     return render(request, "Menu.html", context)
 
+
 def go_to_detailed_view(request):
     data = json.loads(request.body)
     productId = data['productId']
     request.session['productId'] = productId
     return JsonResponse("Got to detail page", safe=False)
 
+
 def go_to_detailed_view_menu(request):
     data = json.loads(request.body)
     menuId = data['menuId']
     request.session['menuId'] = menuId
     return JsonResponse("Got to detail page", safe=False)
+
 
 def detailedView(request):
     productId = request.session['productId']
@@ -61,6 +68,7 @@ def detailedView(request):
     nc = RecipeNutrientsChart.objects.get(recipe=product)
     context = {'product': product, 'ingredients': ingr, 'nots': nots, 'chart': nc}
     return render(request, 'detailedView.html', context)
+
 
 def insertRecipe(request):
     if not request.user.is_superuser:
@@ -289,6 +297,7 @@ def insertRecipe(request):
 
     context = {"notIncl": notIncluded, "ingredients": ingredients, "menus": menus}
     return render(request, "InsertRecipe.html", context=context)
+
 
 def success(request):
     return render(request, "cart/PaymentSuccess.html")
