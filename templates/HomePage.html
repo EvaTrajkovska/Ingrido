@@ -5,9 +5,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" content="width=device-width, initial-scale=1">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link class="style" rel="stylesheet" type="text/css" href="{% static 'css/dark.css' %}">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
    <script type="text/javascript">
         let user = '{{ request.user }}'
@@ -29,68 +30,52 @@
         }
 
         const csrftoken = getToken('csrftoken');
+
+        $(document).ready(function() {
+    var elementWithStyleClass = $('.style');
+    console.log(elementWithStyleClass)
+
+    var darkModeHrefValue = '{% static "css/dark.css" %}';
+    var lightModeHrefValue = '{% static "css/light.css" %}';
+
+    var toggleStatus = localStorage.getItem('toggleStatus');
+
+    if (!toggleStatus) {
+        toggleStatus = 'light';
+    }
+
+
+    if (toggleStatus === 'dark') {
+        elementWithStyleClass.attr('href', darkModeHrefValue);
+        $('.toggle-button').prop('checked', true);
+    } else {
+        elementWithStyleClass.attr('href', lightModeHrefValue);
+        $('.toggle-button').prop('checked', false);
+    }
+
+    $('.toggle-button').click(function() {
+        var isChecked = $(this).prop('checked');
+        console.log($(this))
+        if (isChecked) {
+            elementWithStyleClass.attr('href', darkModeHrefValue);
+            localStorage.setItem('toggleStatus', 'dark');
+        } else {
+            elementWithStyleClass.attr('href', lightModeHrefValue);
+            localStorage.setItem('toggleStatus', 'light');
+        }
+    });
+});
+
+
     </script>
     <title>Home</title>
-    <style>
-        body {
-            background: #FDFAF6;
-        }
-
-        .bg-image {
-            height: 700px;
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
-            display: grid;
-        }
-
-        .image-text {
-            text-align: center;
-            color: #064420;
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .container {
-            padding-top: 30px;
-            display: grid;
-            justify-content: center;
-            padding-bottom: 50px;
-
-        }
-
-        .footer {
-            background: #E4EFE7;
-            color: #064420;
-            justify-content: center;
-            padding-top: 20px;
-            height: 240px;
-            display: flex;
-            margin-bottom: -10px;
-            margin-top: 50px;
-        }
-
-        .card-body {
-            background: #FDFAF6;
-
-        }
-
-        .card {
-            outline: 10px;
-            margin-left: 50px;
-            margin-right: 50px;
-        }
-
-
-    </style>
 </head>
-<body>
+<body class="body">
 
 <nav class="navbar navbar-expand-lg" style="background: none; padding: 0">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}">
-            <img src="{% static 'images/Untitled design.png' %}" alt="" width="100" height="100">
+            <img src="{% static 'images/logo.png' %}" alt="" width="100" height="100">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,22 +84,26 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav col-4 offset-1">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#" style="color: #064420"><h5>How It Works?</h5></a>
+                    <a class="nav-link active" aria-current="page" href="#"><h5>How It Works?</h5></a>
                 </li>
                 <li class="nav-item offset-1">
-                    <a class="nav-link" href="#" style="color: #064420"><h5>Meal Plans</h5></a>
+                    <a class="nav-link" href="#"><h5>Meal Plans</h5></a>
                 </li>
                 <li class="nav-item offset-1">
-                    <a class="nav-link" href="#" style="color: #064420"><h5>Menus</h5></a>
+                    <a class="nav-link" href="#"><h5>Menus</h5></a>
                 </li>
             </ul>
             <a href="http://127.0.0.1:8000/insert_recipe" class="navbar-brand col-1 offset-3">
                 <button id="form-button" class="btn btn-outline-success " style="width: fit-content" type="submit"> Save Meal </button>
             </a>
-            <a class="navbar-brand col-1 " href="{% url 'cart' %}">
+            <a class="navbar-brand " href="{% url 'cart' %}">
                 <img src="{% static 'images/vecteezy_shopping-cart-icon-shopping-basket-on-transparent_19787018_516.png' %}"
                      alt="" width="50" height="30">
             </a>
+            <label class="switch">
+                <input type="checkbox" class="toggle-button">
+                <span class="slider round"></span>
+            </label>
             <a class="navbar-brand col-1 " href="#">
                 <img src="{% static 'images/account.png' %}" alt="" width="35" height="35" style="border-radius: 17px">
             </a>
@@ -154,15 +143,15 @@
 </div>
 
 
-<div class="container-fluid" style="background: #FAF1E6; height: 420px">
+<div class="container-fluid" style="height: 420px">
     <div class="container">
-        <div class="card mb-4" style="background:#FAF1E6; color:#064420;  border: none">
+        <div class="card mb-4" style="border: none">
             <div class="row no-gutters">
                 <div class="col-md-6">
                     <img class="card-img" src="{% static 'images/box.jpg' %}" alt="Card image">
                 </div>
                 <div class="card-body col-md-4 offset-1"
-                     style="background:#FAF1E6; color:#064420; align-items: center  ">
+                     style=" align-items: center  ">
                     <h2 class="card-title"><i>What's inside each box?</i></h2>
                     <br>
                     <p class="card-text">✓ Easy-to-follow recipes with clear nutritional info</p>
@@ -177,65 +166,81 @@
 </div>
 
 <div class="container-fluid">
-    <h1 class="image-text" style="height: 100px">FAQ</h1>
-    <div class="cont" style="display: inline-flex; justify-content: space-between;color: #064420;">
+    <h1 class="image-text text" style="height: 100px">FAQ</h1>
+    <div class="cont" style="display: inline-flex; justify-content: space-between;">
         <p class="col-6 offset-2" style="font-size: 20px">? Does every meal come with a step by step recipe?</p>
         <p class="col-6 offset-2" style="font-size: 20px">? How do I get nutrition & calorie information about every
             meal?</p>
     </div>
 
-    <div class="cont" style="display: inline-flex; color: #064420;">
+    <div class="cont" style="display: inline-flex;">
         <p class="col-6 offset-4" style="font-size: 20px">? How much does it cost?</p>
         <p class="col-7 offset-9" style="font-size: 20px">? How do I recycle my meal-kit box?</p>
     </div>
 </div>
 {% endblock content %}
 
-<div class="footer">
+<div class="footer" style="height: fit-content">
     <div class="card mb-4"
-         style=" background: #E4EFE7;border: none; width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
-        <div class="title">
-            <h5>Our Company</h5>
-        </div>
-        <div class="card-body" style=" background: #E4EFE7;">
-            <p class="card-text">Sustainability</p>
-            <p class="card-text">Careers</p>
-            <p class="card-text">Press</p>
-
-        </div>
-    </div>
-    <div class="card mb-4"
-         style="background: #E4EFE7;border: none; width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
+         style="border: none; width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
         <div class="title">
             <h5>Contact Us</h5>
         </div>
-        <div class="card-body" style=" background: #E4EFE7;">
-            <p class="card-text">Help Center</p>
-            <p class="card-text">Partnership Inquiries</p>
-            <p class="card-text">Information</p>
+        <div class="card-body">
+            <div style="text-align: left; padding-bottom: 5%">
+                <img src="{% static 'images/phone.png' %}" height="15%" width="15%">
+                <span>(+389) 72/123-456</span>
+            </div>
+             <div style="text-align: left; padding-bottom: 5%">
+                <img src="{% static 'images/email.png' %}" height="15%" width="15%">
+                <span>info@example.com</span>
+            </div>
+             <div style="text-align: left; padding-bottom: 5%">
+                <img src="{% static 'images/webpage.png' %}" height="15%" width="15%">
+                <span>www.example.com</span>
+            </div>
+             <div style="text-align: left; padding-bottom: 5%">
+                <img src="{% static 'images/location.png' %}" height="15%" width="15%">
+                <span>123 Main Street, Apartment 4B, Cityville, State 54321, United States</span>
+            </div>
 
         </div>
     </div>
 
     <div class="card mb-4"
-         style="background: #E4EFE7;border: none;width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
+         style="border: none; width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
+        <div class="title">
+            <h5>Links</h5>
+        </div>
+        <div class="card-body">
+            <a href="#" class="nav-link" style="text-align: left"> About Us</a>
+            <a href="#" class="nav-link" style="text-align: left"> Compaly History</a>
+            <a href="#" class="nav-link" style="text-align: left"> Menus</a>
+            <a href="#" class="nav-link" style="text-align: left"> Meal Plans</a>
+        </div>
+    </div>
+
+
+    <div class="card mb-4"
+         style="border: none;width: 18rem; display: inline-block; margin-right: 30px; text-align: center; height: 50%; display: inline-block" >
+        <div>
         <div class="title">
             <h5>Payment Methods</h5>
         </div>
-        <div class="card-body" style=" background: #E4EFE7;">
+        <div class="card-body">
             <p class="card-text"><img src="{% static 'images/PYPL-3570673e.png' %}" height="10%" width="15%"> <img
                     src="{% static 'images/visa-and-mastercard-logo-26.png' %}" height="50%" width="55%"></p>
         </div>
-    </div>
-    <div class="card mb-4"
-         style="background: #E4EFE7;border: none;width: 18rem; display: inline-block; margin-right: 30px; text-align: center">
+        </div>
+          <div style="margin-top: 20%">
         <div class="title">
             <h5>Download Our App</h5>
         </div>
-        <div class="card-body" style=" background: #E4EFE7;">
+        <div class="card-body">
             <p class="card-text"><img src="{% static 'images/GooglePlay.png' %}" height="50%" width="45%"> <img
                     src="{% static 'images/AppStore.png' %}" height="50%" width="45%"></p>
         </div>
+          </div>
     </div>
 
 </div>
