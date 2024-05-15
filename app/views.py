@@ -1,6 +1,6 @@
 import json
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.defaulttags import register
 from .models import *
 
@@ -23,21 +23,34 @@ def cart(request):
     context = {'items': items, 'order': order}
     return render(request, "cart/cart.html", context)
 
-
 def checkout(request):
     if request.user.is_authenticated:
         customer = request.user.buyer
         order, created = Cart.objects.get_or_create(owner=customer, complete=False)
         items = order.cartitem_set.all()
+
+        # Fetch the latest shipping address if it exists
+        shipping_address = ShippingAddress.objects.filter(customer=customer).last()
+
+        if shipping_address:
+            shipping_data = {
+                'address': shipping_address.address,
+                'city': shipping_address.city,
+                'country': shipping_address.country,
+                'zipcode': shipping_address.zipcode,
+                'shipping_time_start': shipping_address.shipping_time_start,
+                'shipping_time_end': shipping_address.shipping_time_end,
+            }
+        else:
+            shipping_data = {}
+
     else:
-        # Create empty cart for now for non-logged in user
         items = []
         order = {'get_cart_total': 0, 'get_cart_items': 0}
+        shipping_data = {}
 
-    context = {'items': items, 'order': order}
+    context = {'items': items, 'order': order, 'shipping_data': shipping_data}
     return render(request, "cart/checkout.html", context)
-
-
 def menu(request):
     menuId = request.session['menuId']
     menu = Menu.objects.get(id=menuId)
