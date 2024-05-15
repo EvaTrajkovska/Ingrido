@@ -8,6 +8,7 @@ db.sqlite3
 # Backup files # 
 *.bak 
 
+node_modules
 # If you are using PyCharm # 
 # User-specific stuff
 .idea/**/workspace.xml

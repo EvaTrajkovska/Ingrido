@@ -68,7 +68,6 @@ img{
 .card-text, .card-title i, .cont p, .nav-link h5, .text{
     color: rgba(255, 255, 255, 0.78);
 }
-
 .switch {
   position: relative;
   display: inline-block;
@@ -128,4 +127,31 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.fa-solid.fa-sun, .fa-solid.fa-moon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  transition: opacity 0.4s;
+}
+
+..fa-solid.fa-sun {
+  left: 10px;
+  opacity: 1;
+}
+
+.fa-solid.fa-moon {
+  right: 10px;
+  opacity: 0;
+}
+
+input:checked + .slider .fa-solid.fa-sun {
+    margin-left: 7px;
+  opacity: 1;
+}
+
+input:checked + .slider .fa-solid.fa-moon {
+  opacity: 0;
 }

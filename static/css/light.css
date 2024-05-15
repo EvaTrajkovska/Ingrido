@@ -1,3 +1,4 @@
+/* light.css */
 .body {
     background: #FDFAF6;
 }
@@ -23,7 +24,6 @@
     display: grid;
     justify-content: center;
     padding-bottom: 50px;
-
 }
 
 .footer {
@@ -51,70 +51,99 @@
 .nav-link h5 {
     color: #064420;
 }
-.card-body a{
+
+.card-body a {
     color: #064420;
 }
+
 .cont p, .card-text, .card-title i {
     color: #064420;
 }
 
 .switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-  margin-right: 20px;
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-right: 20px;
 }
 
 .switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
 }
 
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
 }
 
 input:checked + .slider {
-  background-color: #1f1611;
+    background-color: #1f1611;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #1f1611;
+    box-shadow: 0 0 1px #1f1611;
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
 }
 
 /* Rounded sliders */
 .slider.round {
-  border-radius: 34px;
+    border-radius: 34px;
 }
 
 .slider.round:before {
-  border-radius: 50%;
+    border-radius: 50%;
+}
+
+.fa-solid.fa-sun, .fa-solid.fa-moon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    transition: opacity 0.4s;
+}
+
+.fa-solid.fa-sun {
+    left: 10px;
+    opacity: 0; /* Hide the sun icon by default in light mode */
+}
+
+.fa-solid.fa-moon{
+    opacity: 1;
+        margin-left: 33px;
+}
+
+input:checked + .slider .fa-solid.fa-sun {
+    opacity: 0;
+}
+
+input:checked + .slider .fa-solid.fa-moon{
+    margin-left: 33px;
+    opacity: 1;
 }
