@@ -33,5 +33,6 @@ urlpatterns = [
                   path('go_to_detailed_view_menu/', go_to_detailed_view_menu, name="go_to_detailed_view_menu"),
                   path('process_order/', processOrder, name='processOrder'),
                   path('insert_recipe/', insertRecipe, name='insertRecipe'),
-                  path('success/', success, name='paymentSuccessful')
+                  path('success/', success, name='paymentSuccessful'),
+                  path('deleteCartItem/', delete_cart_item, name='delete_cart_item'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

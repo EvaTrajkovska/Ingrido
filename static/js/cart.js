@@ -84,7 +84,44 @@ function updateItem(productId, action){
             location.assign("http://127.0.0.1:8000/cart/")
         })
 }
+let deleteButtons = document.getElementsByClassName('delete-cart-item');
 
+for (let i = 0; i < deleteButtons.length; i++) {
+    deleteButtons[i].addEventListener('click', function() {
+        let productId = this.dataset.product;
+        let action = this.dataset.action
+
+        console.log('Deleting product:', productId, 'Action:', action);
+
+        if (user === 'AnonymousUser') {
+            console.log('User is not authenticated');
+            return;
+        }
+        deleteCartItem(productId,action);
+    });
+}
+
+function deleteCartItem(productId,action) {
+    let url = '/deleteCartItem/'
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(
+{'productId':productId, 'action':action        })
+    })
+     .then((response) =>{
+         console.log("Eva")
+            return response.json()
+        })
+        .then((data) =>{
+            console.log('Data: ', data)
+            location.assign("http://127.0.0.1:8000/cart/")
+        })
+}
 
 
 function goToDetailedView(productId){

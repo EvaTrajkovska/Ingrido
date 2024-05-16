@@ -43,29 +43,34 @@
 
 			<br>
 			<div class="box-element">
-				<div class="cart-row">
-					<div style="flex:2"></div>
-					<div style="flex:2"><strong>Item</strong></div>
-					<div style="flex:1"><strong>Price</strong></div>
-					<div style="flex:1"><strong>Quantity</strong></div>
-					<div style="flex:1"><strong>Total</strong></div>
-				</div>
-				{% for item in items %}
-				<div class="cart-row">
-					<div style="flex:2"><img class="row-image" src="{{item.recipe.pic.url}}"></div>
-					<div style="flex:2"><p>{{item.recipe.name}}</p></div>
-					<div style="flex:1"><p>${{item.recipe.price|floatformat:2}}</p></div>
-					<div style="flex:1">
-						<p class="quantity">{{item.quantity}}</p>
-						<div class="quantity">
-                            <img data-product="{{item.recipe.id}}" data-action="add" class="chg-quantity update-cart" src="{% static  'images/3+arrow-up.png' %}">
-                            <img data-product="{{item.recipe.id}}" data-action="remove" class="chg-quantity update-cart" src="{% static  'images/2+arrow-down.png' %}">
-                        </div>
-					</div>
-					<div style="flex:1"><p>${{item.get_total|floatformat:2}}</p></div>
-				</div>
-				{% endfor %}
-			</div>
+    <div class="cart-row" style="display: flex; justify-content: space-between; align-items: center;">
+		<div style="flex: 1;"></div>
+		<div style="flex: 1;"><strong>Item</strong></div>
+        <div style="flex: 1;"><strong>Price</strong></div>
+        <div style="flex: 1;"><strong>Quantity</strong></div>
+        <div style="flex: 1;"><strong>Total</strong></div>
+        <div style="flex: 1;"></div>
+    </div>
+    {% for item in items %}
+    <div class="cart-row" style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="flex: 1;"><img class="row-image" src="{{ item.recipe.pic.url }}"></div>
+        <div style="flex: 1;">{{ item.recipe.name }}</div>
+        <div style="flex: 1;">${{ item.recipe.price|floatformat:2 }}</div>
+        <div style="flex: 1;">
+            <p class="quantity">{{ item.quantity }}</p>
+            <div class="quantity">
+                <img data-product="{{ item.recipe.id }}" data-action="add" class="chg-quantity update-cart" src="{% static 'images/3+arrow-up.png' %}">
+                <img data-product="{{ item.recipe.id }}" data-action="remove" class="chg-quantity update-cart" src="{% static 'images/2+arrow-down.png' %}">
+            </div>
+        </div>
+        <div style="flex: 1;">${{ item.get_total|floatformat:2 }}</div>
+        <div style="flex: 1;">
+            <button class="delete-cart-item" data-action="delete" data-product="{{ item.recipe.id }}" style="background-color: darkred; color: #ececec; border-radius: 5px; padding: 5px;
+">Remove</button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 		</div>
 	</div>
     </div>

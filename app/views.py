@@ -80,7 +80,7 @@ def detailedView(request):
     nots = RecipeNotIncluded.objects.filter(recipe=product).all()
     nc = RecipeNutrientsChart.objects.get(recipe=product)
     context = {'product': product, 'ingredients': ingr, 'nots': nots, 'chart': nc}
-    return render(request, 'detailedView.html', context)
+    return render(request, 'DetailedViewPage.html', context)
 
 
 def insertRecipe(request):
@@ -311,6 +311,32 @@ def insertRecipe(request):
     context = {"notIncl": notIncluded, "ingredients": ingredients, "menus": menus}
     return render(request, "InsertRecipe.html", context=context)
 
+from django.views.decorators.http import require_POST
+@require_POST
+def delete_cart_item(request):
+    try:
+        data = json.loads(request.body)
+        productId = data['productId']
+        request.session['productId'] = productId
+        action = data['action']
+        print('Action:', action)
+        print('Product:', productId)
 
+        customer = request.user.buyer
+        product = Recipe.objects.get(id=productId)
+        order, created = Cart.objects.get_or_create(owner=customer, complete=False)
+
+        orderItem, created = CartItem.objects.get_or_create(cart=order, recipe=product)
+
+        if action == 'delete':
+            print('Deleted')
+            orderItem.delete()
+
+        cart_item = CartItem.objects.get(id=productId)
+        cart_item.delete()
+
+        return JsonResponse({'message': 'Cart item deleted successfully'}, status=200)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 def success(request):
     return render(request, "cart/PaymentSuccess.html")
