@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UserProfile</title>
+</head>
+<body>
+{% extends 'HomePage.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="container-fluid prof">
+<div class="card mb-10 profile" style="background-color: #FDFAF6; border: none; ">
+  <div class="row g-0">
+    <div class="col-lg-6 ">
+      <img src="{% static 'images/account.png' %}" class="img-fluid " alt="Image" style="width: 40%; height: 80%; border-radius: 50px; margin: 30px">
+    </div>
+    <div class="col-lg-6">
+      <div class="card-body info" style="margin: 70px">
+        <div class="row ">
+          <div class="col-lg-12">
+            <div class="card" style=" margin: 0; border: none">
+              <div class="card-body" >
+                <h5 class="card-title" >Name:   {{ customer.name }}</h5>
+              </div>
+            </div>
+          </div>
+            <div class="col-lg-12">
+            <div class="card" style=" margin: 0;border: none">
+              <div class="card-body" >
+                <h5 class="card-title" > Surname:   {{ customer.surname }}</h5>
+              </div>
+            </div>
+          </div>
+            </div>
+          <div class="col-lg-6">
+            <div class="card" style=" margin: 0;border: none">
+              <div class="card-body" >
+                <h5 class="card-title">Username:   {{ customer.username }}</h5>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+
+
+    <div class="container-fluid col-11" >
+    <div class="row col-11" style="padding: 40px 0 20px 0">
+    <div class="col-lg-10 offset-2" style="background-color: #FAF1E6;">
+        <br>
+        <h4>Shipping Information</h4>
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Adress</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ shipping_data.address }} </h6>
+            </div>
+        </div>
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>City</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ shipping_data.city }} </h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Country</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ shipping_data.country }} </h6>
+            </div>
+        </div>
+
+
+        <div style="display: inline-flex" class="col-12">
+            <div class="col-10" style="display: inline-table">
+                <h6>Zip Code</h6>
+            </div>
+            <div class="col-2" style="display: inline-table">
+                <h6>{{ shipping_data.zipcode }} </h6>
+            </div>
+        </div>
+
+    </div>
+    </div>
+    </div>
+    <div style="margin-left: 600px">
+                    <button style="width: 40%; background-color: #064420; border-radius: 9px; color: #FDFAF6; padding: 5px"   >Edit Your Information</button>
+          </div>
+{% endblock content %}
+
+</body>
+
+</html>

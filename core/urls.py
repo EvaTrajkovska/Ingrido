@@ -35,4 +35,5 @@ urlpatterns = [
                   path('insert_recipe/', insertRecipe, name='insertRecipe'),
                   path('success/', success, name='paymentSuccessful'),
                   path('deleteCartItem/', delete_cart_item, name='delete_cart_item'),
+                  path('userProfile/', userProfile, name='userProfile')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

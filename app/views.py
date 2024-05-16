@@ -338,5 +338,29 @@ def delete_cart_item(request):
         return JsonResponse({'message': 'Cart item deleted successfully'}, status=200)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+def userProfile(request):
+    if request.user.is_authenticated:
+        customer = request.user.buyer
+        # Fetch the latest shipping address if it exists
+        shipping_address = ShippingAddress.objects.filter(customer=customer).last()
+
+        if shipping_address:
+            shipping_data = {
+                'address': shipping_address.address,
+                'city': shipping_address.city,
+                'country': shipping_address.country,
+                'zipcode': shipping_address.zipcode,
+                'shipping_time_start': shipping_address.shipping_time_start,
+                'shipping_time_end': shipping_address.shipping_time_end,
+            }
+        else:
+            shipping_data = {}
+
+    context = {'customer': customer, 'shipping_data': shipping_data}
+    return render(request, "UserProfile.html", context)
+
+
 def success(request):
     return render(request, "cart/PaymentSuccess.html")
