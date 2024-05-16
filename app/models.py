@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
+from decimal import Decimal
 
 
 class Buyer(models.Model):
@@ -129,7 +130,7 @@ class CartItem(models.Model):
 
     @property
     def get_total(self):
-        total = self.recipe.price * self.quantity
+        total = Decimal(self.recipe.price).quantize(Decimal('0.01')) * self.quantity
         return total
 
 

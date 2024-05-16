@@ -1,4 +1,7 @@
 import json
+import stripe
+
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.template.defaulttags import register
@@ -43,13 +46,26 @@ def checkout(request):
             }
         else:
             shipping_data = {}
+        
+        # Cart Total Price
+        total = str(order.get_cart_total).replace('.', '')
+
+        # Stripe Intent
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        intent = stripe.PaymentIntent.create(
+        amount = total,
+        currency = 'usd',
+        metadata={'customerid': customer.id}
+        )
+        client_secret = intent.client_secret
 
     else:
         items = []
         order = {'get_cart_total': 0, 'get_cart_items': 0}
         shipping_data = {}
+        client_secret = None
 
-    context = {'items': items, 'order': order, 'shipping_data': shipping_data}
+    context = {'items': items, 'order': order, 'shipping_data': shipping_data, 'client_secret': client_secret, 'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY}
     return render(request, "cart/checkout.html", context)
 def menu(request):
     menuId = request.session['menuId']

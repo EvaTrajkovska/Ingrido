@@ -45,30 +45,13 @@
 
             <br>
             <div class="box-element hidden" id="payment-info" style="margin-bottom: 20px">
-                <div id="payment-form-card">
-                    <p>Card details:</p>
-                    <hr>
-                    <div class="form-field">
-                        <label class="form-label">Name on card</label>
-                        <input required class="form-control" type="text" name="name" placeholder="Name">
-                    </div>
-                    <br>
-                    <div class="form-field">
-                        <label class="form-label">Card Number</label>
-                        <input required class="form-control" type="text" name="cardNumber" placeholder="1111 2222 3333 4444">
-                    </div>
-                    <br>
-                    <div class="form-field">
-                        <label class="form-label">Expiration date</label>
-                        <input required class="form-control" type="text" name="expiration-date" placeholder="mm/yy">
-                    </div>
-                    <div class="form-field">
-                        <label class="form-label">CVV</label>
-                        <input required class="form-control" type="text" name="cvv" placeholder="123">
-                    </div>
+                <!-- Card error messages in this element -->
+                <div id="card-errors" class="a" role="alert"></div>
+                <div id="card-element" class="form-control form-control-payment">
+                    <!-- Payment elements will appear here -->
                 </div>
                 <br>
-                <button style="width: 100%" class="btn btn-danger" id="make-payment">Pay ${{ order.get_cart_total }} </button>
+                <button style="width: 100%" class="btn btn-danger" id="make-payment" data-secret="{{ client_secret }}">Pay ${{ order.get_cart_total }} </button>
             </div>
         </div>
 
@@ -93,7 +76,9 @@
     </div>
 </div>
 
+<script src="https://js.stripe.com/v3/"></script>
 <script>
+    var stripe = Stripe('{{ STRIPE_PUBLISHABLE_KEY }}');
     var total = '{{order.get_cart_total|floatformat:2}}';
 
     var form = document.getElementById('form');
@@ -102,6 +87,31 @@
         console.log('Form Submitted...');
         document.getElementById('form-button').classList.add("hidden");
         document.getElementById('payment-info').classList.remove("hidden");
+    });
+
+    var payButton = document.getElementById('make-payment');
+    clientSecret = payButton.getAttribute('data-secret');
+
+    var elements = stripe.elements();
+    var style = {
+        base: {
+            color: "#000",
+            lineHeight: "2.4",
+            fontSize: "16px"
+        }
+    };
+    var card = elements.create("card", { style: style });
+    card.mount("#card-element");
+
+    card.on('change', function(event) {
+        var displayError = document.getElementById('card-errors')
+        if (event.error) {
+            displayError.textContent = event.error.message;
+            $('#card-errors').addClass('alert alert-info');
+        } else {
+            displayError.textContent = '';
+            $('#card-errors').removeClass('alert alert-info');
+        }
     });
 
     document.getElementById('make-payment').addEventListener('click', function (e) {
