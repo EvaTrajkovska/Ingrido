@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.defaulttags import register
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
+from django.views.decorators.http import require_POST
 
 
 def home(request):
@@ -27,6 +28,7 @@ def cart(request):
 
     context = {'items': items, 'order': order}
     return render(request, "cart/cart.html", context)
+
 
 def checkout(request):
     if request.user.is_authenticated:
@@ -48,16 +50,16 @@ def checkout(request):
             }
         else:
             shipping_data = {}
-        
+
         # Cart Total Price
         total = str(order.get_cart_total).replace('.', '')
 
         # Stripe Intent
         stripe.api_key = settings.STRIPE_SECRET_KEY
         intent = stripe.PaymentIntent.create(
-        amount = total,
-        currency = 'usd',
-        metadata={'customerid': customer.id}
+            amount=total,
+            currency='usd',
+            metadata={'customerid': customer.id}
         )
         client_secret = intent.client_secret
 
@@ -69,6 +71,8 @@ def checkout(request):
 
     context = {'customer': customer, 'items': items, 'order': order, 'shipping_data': shipping_data, 'client_secret': client_secret, 'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY}
     return render(request, "cart/checkout.html", context)
+
+
 def menu(request):
     menuId = request.session['menuId']
     menu = Menu.objects.get(id=menuId)
@@ -103,7 +107,7 @@ def detailedView(request):
 
 def insertRecipe(request):
     if not request.user.is_superuser:
-        return render(request, 'AccessDenied.html')
+        return render(request, 'AccessDeniedPage.html')
 
     @register.filter(name='split')
     def split(value):
@@ -255,7 +259,7 @@ def stripe_webhook(request):
     except ValueError as e:
         print(e)
         return HttpResponse(status=400)
-    
+
     # Handle the event
     if event.type == 'payment_intent.succeeded':
         Cart.objects.filter(transaction_id=event.data.object.client_secret).update(complete=True)
@@ -265,91 +269,6 @@ def stripe_webhook(request):
     return HttpResponse(status=200)
 
 
-def insertRecipe(request):
-    if not request.user.is_superuser:
-        return render(request, 'AccessDenied.html')
-
-    @register.filter(name='split')
-    def split(value):
-        return value.split(',')
-
-    if request.method == 'POST':
-        data = request.POST
-        pic = request.FILES.get('picture')
-        menuN = data['hid-menu']
-
-        ingredients = data['hid-ingredient']
-        nots = data['hid-not']
-
-        ingredients_list = split(ingredients)
-        print(ingredients_list)
-
-        nots_list = split(nots)
-        print(nots_list)
-
-        for i in ingredients_list:
-            print(i)
-
-        for i in nots_list:
-            print(i)
-
-        recipe = Recipe.objects.create(
-            name=data['heading'],
-            subheading=data['subheading'],
-            description=data['desc'],
-            difficulty=data['difficulty'],
-            allergens=data['allergens'],
-            total_time=data['total_time'],
-            tags=data['tags'],
-            price=data['price'],
-            pic=pic
-        )
-
-        menu = Menu.objects.get(name=menuN)
-        RecipeMenu.objects.create(
-            menu=menu,
-            recipe=recipe
-        )
-
-        for i in ingredients_list:
-            ing = Ingredient.objects.get(name=i)
-            RecipeIngredient.objects.create(
-                recipe=recipe,
-                ingredients=ing
-            )
-
-        for i in nots_list:
-            ni = NotIncluded.objects.get(name=i)
-            RecipeNotIncluded.objects.create(
-                recipe=recipe,
-                other=ni
-            )
-
-        nutri_table = NutrientsChart.objects.create(
-            energy=data['energy'],
-            calories=data['calories'],
-            fat=data['fat'],
-            saturated_fat=data['saturated_fat'],
-            carbs=data['carbs'],
-            sugar=data['sugar'],
-            protein=data['protein'],
-            cholesterol=data['cholesterol'],
-            sodium=data['sodium'],
-        )
-
-        RecipeNutrientsChart.objects.create(
-            recipe=recipe,
-            nutrients_chart=nutri_table
-        )
-
-    notIncluded = NotIncluded.objects.all()
-    ingredients = Ingredient.objects.all()
-    menus = Menu.objects.all()
-
-    context = {"notIncl": notIncluded, "ingredients": ingredients, "menus": menus}
-    return render(request, "InsertRecipe.html", context=context)
-
-from django.views.decorators.http import require_POST
 @require_POST
 def delete_cart_item(request):
     try:
