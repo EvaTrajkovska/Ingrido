@@ -32,6 +32,7 @@ urlpatterns = [
                   path('updateItem/', updateItem, name='updateItem'),
                   path('go_to_detailed_view_menu/', go_to_detailed_view_menu, name="go_to_detailed_view_menu"),
                   path('process_order/', processOrder, name='processOrder'),
+                  path('webhook/', stripe_webhook),
                   path('insert_recipe/', insertRecipe, name='insertRecipe'),
                   path('success/', success, name='paymentSuccessful'),
                   path('deleteCartItem/', delete_cart_item, name='delete_cart_item'),
