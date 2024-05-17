@@ -65,7 +65,7 @@ def checkout(request):
         shipping_data = {}
         client_secret = None
 
-    context = {'items': items, 'order': order, 'shipping_data': shipping_data, 'client_secret': client_secret, 'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY}
+    context = {'customer': customer, 'items': items, 'order': order, 'shipping_data': shipping_data, 'client_secret': client_secret, 'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY}
     return render(request, "cart/checkout.html", context)
 def menu(request):
     menuId = request.session['menuId']
@@ -215,17 +215,15 @@ def updateItem(request):
 
 # @csrf_exempt
 def processOrder(request):
-    transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
+    transaction_id = data['form']['client_secret']
 
     if request.user.is_authenticated:
         customer = request.user.buyer
         order, created = Cart.objects.get_or_create(owner=customer, complete=False)
         total = float(data['form']['total'])
         order.transaction_id = transaction_id
-
-        if total == order.get_cart_total:
-            order.complete = True
+        order.sum = total
         order.save()
 
         ShippingAddress.objects.create(

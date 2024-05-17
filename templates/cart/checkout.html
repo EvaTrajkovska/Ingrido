@@ -114,7 +114,7 @@
         }
     });
 
-    document.getElementById('make-payment').addEventListener('click', function (e) {
+    payButton.addEventListener('click', function (e) {
         submitFormData();
     });
 
@@ -122,7 +122,8 @@
         console.log('Data is submitted');
 
         let userFormData = {
-            'total': total
+            'total': total,
+            'client_secret': clientSecret
         };
 
         var shippingInfo = {
@@ -147,12 +148,39 @@
             body: JSON.stringify({'shipping': shippingInfo, 'form': userFormData}),
         })
         .then((response) => {
-            return response.json();
+            if (response.ok) {
+                return stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: card,
+                        billing_details: {
+                            address: {
+                                city: shippingInfo.city,
+                                country: shippingInfo.country,
+                                line1: shippingInfo.address,
+                                postal_code: shippingInfo.zipcode,
+                            },
+                            name: '{{ customer.name }}' + ' ' + '{{ customer.surname }}',
+                        },
+                    }
+                });
+            }else {
+                throw new Error('Failed to fetch');
+            }
         })
-        .then((data) => {
-            console.log('Success:', data);
-            alert("Done");
-            window.location.href = "{% url 'paymentSuccessful' %}";
+        .then((result) => {
+            if (result.error) {
+                console.error('Payment failed:', result.error.message);
+            } else {
+                if (result.paymentIntent.status === 'succeeded') {
+                    console.log('payment processed')
+                    alert("Done");
+                    window.location.href = "{% url 'paymentSuccessful' %}";
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to process payment');
         });
     }
 </script>
