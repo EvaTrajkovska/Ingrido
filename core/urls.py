@@ -25,6 +25,9 @@ urlpatterns = [
                   path('home/', home, name="home"),
                   path('', home, name="home"),
                   path('menu/', menu, name="menu"),
+                  path('menus/', menus, name="menus"),
+                  path('about_us/', about_us, name="about_us"),
+                  path('how_it_works/', how_it_works, name='how_it_works'),
                   path('cart/', cart, name="cart"),
                   path('checkout/', checkout, name="checkout"),
                   path('go_to_detailed_view/', go_to_detailed_view, name="go_to_detailed_view"),
@@ -35,6 +38,7 @@ urlpatterns = [
                   path('webhook/', stripe_webhook),
                   path('insert_recipe/', insertRecipe, name='insertRecipe'),
                   path('success/', success, name='paymentSuccessful'),
+                  path('successfully_added_menu/', successfully_added_menu, name='successfullyAddedMenu'),
                   path('deleteCartItem/', delete_cart_item, name='delete_cart_item'),
                   path('userProfile/', userProfile, name='userProfile')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

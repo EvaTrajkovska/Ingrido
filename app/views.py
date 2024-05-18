@@ -16,6 +16,16 @@ def home(request):
     context = {"menus": qs, }
     return render(request, "HomePage.html", context)
 
+def about_us(request):
+    return render(request, "AboutUsPage.html")
+
+def how_it_works(request):
+    return render(request, "HowItWorks.html")
+
+def menus(request):
+    qs = Menu.objects.all()
+    context = {"menus": qs, }
+    return render(request, "MenusList.html", context)
 
 def cart(request):
     if request.user.is_authenticated:
@@ -321,3 +331,7 @@ def userProfile(request):
 
 def success(request):
     return render(request, "cart/PaymentSuccess.html")
+
+
+def successfully_added_menu(request):
+    return render(request, "SuccessfullyAddedMenu.html")
