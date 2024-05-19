@@ -10,7 +10,7 @@ from django.template.defaulttags import register
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
-from .forms import BuyerLoginForm
+from .forms import BuyerLoginForm, UserRegisterForm
 from .models import *
 from django.views.decorators.http import require_POST
 
@@ -358,3 +358,37 @@ def login_view(request):
     else:
         form = BuyerLoginForm()
     return render(request, 'LogIn.html', {'form': form})
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            Buyer.objects.create(
+                user=user,
+                name=form.cleaned_data.get('name'),
+                surname=form.cleaned_data.get('surname'),
+                address=form.cleaned_data.get('address'),
+                city=form.cleaned_data.get('city'),
+                country=form.cleaned_data.get('country'),
+                zipcode=form.cleaned_data.get('zipcode')
+            )
+            username = form.cleaned_data.get('username')
+            if(form.cleaned_data.get('address') != "" and
+                form.cleaned_data.get('city') != "" and
+                form.cleaned_data.get('country') != "" and
+                form.cleaned_data.get('zipcode') != ""):
+                ShippingAddress.objects.create(
+                    customer=user.buyer,
+                    address=form.cleaned_data.get('address'),
+                    city=form.cleaned_data.get('city'),
+                    country=form.cleaned_data.get('country'),
+                    zipcode=form.cleaned_data.get('zipcode')
+                )
+
+            messages.success(request, f'Your account has been created! You are now able to log in')
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'Register.html', {'form': form})

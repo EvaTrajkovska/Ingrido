@@ -10,6 +10,11 @@ class Buyer(models.Model):
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
     username = models.CharField(max_length=255)
+    address = models.CharField(max_length=200, null=True, blank=True)
+    city = models.CharField(max_length=200, null=True, blank=True)
+    country = models.CharField(max_length=200, null=True, blank=True)
+    zipcode = models.CharField(max_length=200, null=True, blank=True)
+
 
     def __str__(self):
         return f' {self.name}  {self.surname} '

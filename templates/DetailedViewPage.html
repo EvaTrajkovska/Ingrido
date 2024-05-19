@@ -18,7 +18,7 @@
     <div class="col-lg-6">
       <div class="card-body info">
         <h2 class="card-title">  {{ product.name }}</h2>
-          <h5 class="card-text"> {{ product.subheading }} </h5>
+          <h5 id="sub-text"> {{ product.subheading }} </h5>
         <p class="card-text">    {{ product.description }}</p>
 
 
@@ -76,7 +76,7 @@
                 </div>
         {% endfor %}
     </div>
-    <div class="col-lg-5 offset-1" style="background-color: #FAF1E6;">
+    <div class="col-lg-5 offset-1">
         <br>
         <h4>Nutrition Values</h4>
         <div style="display: inline-flex" class="col-12">

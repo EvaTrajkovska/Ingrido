@@ -50,7 +50,7 @@
  .card-body a{
      color: #fcfcfc;
  }
-.image-text{
+.image-text, #sub-text{
     color: rgb(0, 0, 0);
 }
 img{
@@ -137,7 +137,7 @@ input:checked + .slider:before {
   transition: opacity 0.4s;
 }
 
-..fa-solid.fa-sun {
+.fa-solid.fa-sun {
   left: 10px;
   opacity: 1;
 }
