@@ -40,5 +40,6 @@ urlpatterns = [
                   path('success/', success, name='paymentSuccessful'),
                   path('successfully_added_menu/', successfully_added_menu, name='successfullyAddedMenu'),
                   path('deleteCartItem/', delete_cart_item, name='delete_cart_item'),
-                  path('userProfile/', userProfile, name='userProfile')
+                  path('userProfile/', userProfile, name='userProfile'),
+                  path('login/', login_view, name='login_view')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

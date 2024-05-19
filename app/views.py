@@ -2,11 +2,15 @@ import json
 import stripe
 
 from django.conf import settings
+from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.http.response import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template.defaulttags import register
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
+
+from .forms import BuyerLoginForm
 from .models import *
 from django.views.decorators.http import require_POST
 
@@ -335,3 +339,22 @@ def success(request):
 
 def successfully_added_menu(request):
     return render(request, "SuccessfullyAddedMenu.html")
+
+def login_view(request):
+    if request.method == 'POST':
+        form = BuyerLoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f'Welcome, {username}!')
+                return redirect('home')
+            else:
+                messages.error(request, 'Incorrect username or password')
+        else:
+            messages.error(request, 'Incorrect username or password')
+    else:
+        form = BuyerLoginForm()
+    return render(request, 'LogIn.html', {'form': form})
