@@ -359,7 +359,7 @@ def login_view(request):
         form = BuyerLoginForm()
     return render(request, 'LogIn.html', {'form': form})
 
-def register(request):
+def register_view(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():

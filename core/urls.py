@@ -42,5 +42,5 @@ urlpatterns = [
                   path('deleteCartItem/', delete_cart_item, name='delete_cart_item'),
                   path('userProfile/', userProfile, name='userProfile'),
                   path('login/', login_view, name='login_view'),
-                  path('register/', register, name='register')
+                  path('register/', register_view, name='register_view')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
