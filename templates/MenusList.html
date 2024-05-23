@@ -13,16 +13,27 @@
 {% load static %}
 {% block content %}
     <div class="container" style="padding-top: 20px">
+        {% if request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'add_menu' %}" class="btn btn-primary">Add Menu</a>
+        {% endif %}
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for menu in menus %}
                 <div class="col">
-                    <a href="{% url 'menu' %}">
+                    <a href="{% url 'menu' menu.id %}">
                         <div class="card h-100">
-                            <img src="{{ menu.img.url }}"
-                                 data-product="{{ menu.id }}" class="card-img-top menu" alt="..."
-                                 style="height: 250px; width: 350px"> <a/>
+                            {% if menu.img %}
+                                <img src="{{ menu.img.url }}" data-product="{{ menu.id }}" class="card-img-top menu" alt="..." style="height: 250px; width: 350px">
+                            {% else %}
+                                <img src="{% static 'placeholder.jpg' %}" class="card-img-top menu" alt="Placeholder Image" style="height: 250px; width: 350px">
+                            {% endif %}
                         </div>
                     </a>
+                    {% if request.user.is_authenticated and request.user.is_staff %}
+                        <div>
+                            <a href="{% url 'edit_menu' menu.id %}" class="btn btn-secondary">Edit</a>
+                            <a href="{% url 'delete_menu' menu.id %}" class="btn btn-danger">Delete</a>
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

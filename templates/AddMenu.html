@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Menu</title>
+    <style>
+        .btnsize {
+            width: 40px;
+        }
+
+        .itm {
+            width: 25%;
+        }
+        .c-label{
+            width: 70%;
+        }
+    </style>
+</head>
+<body>
+{% extends 'HomePage.html' %}
+{% load static %}
+{% block content %}
+   <div class="row">
+        <div class="col-lg-6 offset-3">
+            <div class="box-element" id="form-wrapper">
+                <form id="form" method="post" action="{% url 'add_menu' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div id="menu-info">
+                        <h4 style="text-align: center">MENU INFORMATION</h4>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="name" placeholder="Enter Menu Name..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="file" name="img" placeholder="Add Image..">
+                        </div>
+                        <br>
+                    </div>
+                    <button id="form-button" class="btn btn-success btn-block" type="submit">Save Menu</button>
+                </form>
+            </div>
+        </div>
+   </div>
+
+    <script>
+    let array_recipes = [];
+    const hidd_recipes = document.getElementById('hid-recipes');
+
+    let selectedRecipes = document.querySelectorAll('input[name="add-recipe"]');
+    for (let i = 0; i < selectedRecipes.length; i++) {
+        selectedRecipes[i].addEventListener('click', function () {
+            let tmp = selectedRecipes[i].value;
+            if (array_recipes.includes(tmp)) {
+                array_recipes.splice(array_recipes.indexOf(tmp), 1);
+            } else {
+                array_recipes.push(tmp);
+            }
+            hidd_recipes.value = array_recipes.join(',');
+        });
+    }
+    </script>
+
+{% endblock %}
+</body>
+</html>

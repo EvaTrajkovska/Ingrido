@@ -15,7 +15,6 @@ class Buyer(models.Model):
     country = models.CharField(max_length=200, null=True, blank=True)
     zipcode = models.CharField(max_length=200, null=True, blank=True)
 
-
     def __str__(self):
         return f' {self.name}  {self.surname} '
 
@@ -71,6 +70,7 @@ class Recipe(models.Model):
     total_time = models.IntegerField(null=True, blank=True)
     pic = models.ImageField(null=True, blank=True)
     price = models.FloatField(null=True, blank=True)
+    menus = models.ManyToManyField(Menu, through='RecipeMenu')
 
     def __str__(self):
         return str(self.name)

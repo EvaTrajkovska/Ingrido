@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Menu</title>
+    <style>
+        .btnsize {
+            width: 40px;
+        }
+
+        .itm {
+            width: 25%;
+        }
+        .c-label{
+            width: 70%;
+        }
+        .form-field {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-field label {
+            margin-right: 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        #file-name {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+{% extends 'HomePage.html' %}
+{% load static %}
+{% block content %}
+   <div class="row">
+        <div class="col-lg-6 offset-3">
+            <div class="box-element" id="form-wrapper">
+                <form id="form" method="post" action="{% url 'edit_menu' menu.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div id="menu-info">
+                        <h4 style="text-align: center">MENU INFORMATION</h4>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="name" value="{{ menu.name }}" placeholder="Enter Menu Name..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="file" id="img" name="img">
+                            <span id="file-name">{{ recipe.pic.name }}</span>
+                        </div>
+                        <br>
+                    </div>
+                    <button id="form-button" class="btn btn-success btn-block" type="submit">Save Changes</button>
+                </form>
+            </div>
+        </div>
+   </div>
+
+    <script>
+    function updateFileName() {
+        const pictureInput = document.getElementById('picture');
+        const fileNameLabel = document.getElementById('file-name');
+
+        const fileName = pictureInput.files[0] ? pictureInput.files[0].name : 'No file chosen';
+        fileNameLabel.textContent = fileName;
+    }
+
+    window.addEventListener('load', function() {
+        const currentFileName = '{{ menu.img.name }}';
+        const fileNameLabel = document.getElementById('file-name');
+        if (currentFileName) {
+            fileNameLabel.textContent = currentFileName;
+        }
+    });
+    </script>
+{% endblock %}
+</body>
+</html>

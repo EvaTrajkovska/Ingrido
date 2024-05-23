@@ -41,7 +41,10 @@
 <h1 style="color: #064420; text-align: center; font-family: 'Eras Bold ITC',serif ; font-size: 75px; font-style: italic">{{ menu.name }}</h1>
 <br>
     <div class="container" style="padding-top: 20px">
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% if request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'add_recipe' menu.id %}" class="btn btn-primary mb-3">Add Recipe</a>
+        {% endif %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for recipe in recipes %}
             <div class="col">
                 <div class="card h-100" style="border:none">
@@ -53,7 +56,13 @@
                         <p class="card-text" style="color: #064420;font-size: 18px">{{ recipe.recipe.subheading }}</p>
                         <p class="card-text" style="color: black; font-weight: bold; display: inline-flex; padding-right: 5px ">{{ recipe.recipe.total_time }} min</p>
                         <p class="card-text" style="color: black; font-weight: lighter; display: inline-flex; border-left: 1px black solid; padding-left: 10px">{{ recipe.recipe.difficulty}} </p>
-                         <form method="POST" action="">
+                        {% if request.user.is_authenticated and request.user.is_staff %}
+                                <div>
+                                    <a href="{% url 'edit_recipe' recipe.id %}" class="btn btn-secondary">Edit</a>
+                                    <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-danger">Delete</a>
+                                </div>
+                        {% endif %}
+                        <form method="POST" action="">
                        {% csrf_token %}
                          <button data-product="{{ recipe.id }}" data-action="add"
                             class="btn btn-outline-secondary add-btn item ">View

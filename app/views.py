@@ -2,7 +2,9 @@ import json
 import stripe
 
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -20,16 +22,20 @@ def home(request):
     context = {"menus": qs, }
     return render(request, "HomePage.html", context)
 
+
 def about_us(request):
     return render(request, "AboutUsPage.html")
 
+
 def how_it_works(request):
     return render(request, "HowItWorks.html")
+
 
 def menus(request):
     qs = Menu.objects.all()
     context = {"menus": qs, }
     return render(request, "MenusList.html", context)
+
 
 def cart(request):
     if request.user.is_authenticated:
@@ -83,14 +89,14 @@ def checkout(request):
         shipping_data = {}
         client_secret = None
 
-    context = {'customer': customer, 'items': items, 'order': order, 'shipping_data': shipping_data, 'client_secret': client_secret, 'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY}
+    context = {'customer': customer, 'items': items, 'order': order, 'shipping_data': shipping_data,
+               'client_secret': client_secret, 'STRIPE_PUBLISHABLE_KEY': settings.STRIPE_PUBLISHABLE_KEY}
     return render(request, "cart/checkout.html", context)
 
 
-def menu(request):
-    menuId = request.session['menuId']
-    menu = Menu.objects.get(id=menuId)
-    qs = RecipeMenu.objects.filter(menu_id=menuId).all()
+def menu(request, menu_id):
+    menu = get_object_or_404(Menu, id=menu_id)
+    qs = RecipeMenu.objects.filter(menu_id=menu_id).all()
     context = {"recipes": qs, "menu": menu}
     return render(request, "Menu.html", context)
 
@@ -340,6 +346,19 @@ def success(request):
 def successfully_added_menu(request):
     return render(request, "SuccessfullyAddedMenu.html")
 
+
+def successfully_edited_menu(request):
+    return render(request, "SuccessfullyEditedMenu.html")
+
+
+def meal_successfully_added(request):
+    return render(request, 'MealSuccessfullyAdded.html')
+
+
+def meal_successfully_edited(request):
+    return render(request, 'MealSuccessfullyEdited.html')
+
+
 def login_view(request):
     if request.method == 'POST':
         form = BuyerLoginForm(request, data=request.POST)
@@ -359,6 +378,7 @@ def login_view(request):
         form = BuyerLoginForm()
     return render(request, 'LogIn.html', {'form': form})
 
+
 def register_view(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -374,10 +394,10 @@ def register_view(request):
                 zipcode=form.cleaned_data.get('zipcode')
             )
             username = form.cleaned_data.get('username')
-            if(form.cleaned_data.get('address') != "" and
-                form.cleaned_data.get('city') != "" and
-                form.cleaned_data.get('country') != "" and
-                form.cleaned_data.get('zipcode') != ""):
+            if (form.cleaned_data.get('address') != "" and
+                    form.cleaned_data.get('city') != "" and
+                    form.cleaned_data.get('country') != "" and
+                    form.cleaned_data.get('zipcode') != ""):
                 ShippingAddress.objects.create(
                     customer=user.buyer,
                     address=form.cleaned_data.get('address'),
@@ -392,3 +412,226 @@ def register_view(request):
     else:
         form = UserRegisterForm()
     return render(request, 'Register.html', {'form': form})
+
+
+@login_required
+@staff_member_required
+def add_menu(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        img = request.FILES.get('img')
+        if name and img:
+            menu = Menu.objects.create(name=name, img=img)
+            return redirect('successfullyAddedMenu')
+        else:
+            error_message = "Please fill in all required fields."
+            return render(request, 'add_menu.html', {'error_message': error_message})
+    else:
+        return render(request, 'AddMenu.html')
+
+
+@login_required
+@staff_member_required
+def edit_menu(request, menu_id):
+    menu = get_object_or_404(Menu, pk=menu_id)
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        img = request.FILES.get('img')
+        if name:
+            menu.name = name
+            if img:
+                menu.img = img
+            menu.save()
+            return redirect('successfullyEditedMenu')
+        else:
+            error_message = "Please fill in all required fields."
+            return render(request, 'EditMenu.html', {'menu': menu, 'error_message': error_message})
+    else:
+        return render(request, 'EditMenu.html', {'menu': menu})
+
+
+@login_required
+@staff_member_required
+def delete_menu(request, menu_id):
+    menu = get_object_or_404(Menu, id=menu_id)
+
+    if request.method == "POST":
+        menu.delete()
+        messages.success(request, "Menu deleted successfully.")
+        return redirect('menus')
+
+    return render(request, 'ConfirmMenuDelete.html', {'menu': menu})
+
+
+@login_required
+@staff_member_required
+def add_recipe(request, menu_id):
+    if not request.user.is_superuser:
+        return render(request, 'AccessDeniedPage.html')
+
+    def split(value):
+        return value.split(',')
+
+    if request.method == 'POST':
+        data = request.POST
+        pic = request.FILES.get('picture')
+
+        ingredients = data['hid-ingredient']
+        nots = data['hid-not']
+
+        ingredients_list = split(ingredients)
+        nots_list = split(nots)
+
+        recipe = Recipe.objects.create(
+            name=data['heading'],
+            subheading=data['subheading'],
+            description=data['desc'],
+            difficulty=data['difficulty'],
+            allergens=data['allergens'],
+            total_time=data['total_time'],
+            tags=data['tags'],
+            price=data['price'],
+            pic=pic
+        )
+
+        menu = Menu.objects.get(id=menu_id)
+        RecipeMenu.objects.create(
+            menu=menu,
+            recipe=recipe
+        )
+
+        for ingredient_name in ingredients_list:
+            ingredient = Ingredient.objects.get(name=ingredient_name)
+            RecipeIngredient.objects.create(
+                recipe=recipe,
+                ingredients=ingredient
+            )
+
+        for not_name in nots_list:
+            not_included = NotIncluded.objects.get(name=not_name)
+            RecipeNotIncluded.objects.create(
+                recipe=recipe,
+                other=not_included
+            )
+
+        nutrient_chart = NutrientsChart.objects.create(
+            energy=data['energy'],
+            calories=data['calories'],
+            fat=data['fat'],
+            saturated_fat=data['saturated_fat'],
+            carbs=data['carbs'],
+            sugar=data['sugar'],
+            protein=data['protein'],
+            cholesterol=data['cholesterol'],
+            sodium=data['sodium'],
+        )
+
+        RecipeNutrientsChart.objects.create(
+            recipe=recipe,
+            nutrients_chart=nutrient_chart
+        )
+
+        return redirect('mealSuccessfullyAdded')
+
+    notIncluded = NotIncluded.objects.all()
+    ingredients = Ingredient.objects.all()
+
+    context = {"notIncl": notIncluded, "ingredients": ingredients}
+    return render(request, "AddRecipe.html", context=context)
+
+
+@login_required
+@staff_member_required
+def edit_recipe(request, recipe_id):
+    if not request.user.is_superuser:
+        return render(request, 'AccessDeniedPage.html')
+
+    def split(value):
+        return value.split(',')
+
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    recipe_nutrients_chart = RecipeNutrientsChart.objects.filter(recipe=recipe).first()
+
+    if request.method == 'POST':
+        data = request.POST
+        pic = request.FILES.get('picture')
+
+        ingredients = data['hid-ingredient']
+        nots = data['hid-not']
+
+        ingredients_list = split(ingredients)
+        nots_list = split(nots)
+
+        recipe.name = data['heading']
+        recipe.subheading = data['subheading']
+        recipe.description = data['desc']
+        recipe.difficulty = data['difficulty']
+        recipe.allergens = data['allergens']
+        recipe.total_time = data['total_time']
+        recipe.tags = data['tags']
+        recipe.price = data['price']
+
+        if pic:
+            recipe.pic = pic
+
+        recipe.save()
+
+        menu_id = data.get('menu_id')
+
+        if menu_id:
+            menu = Menu.objects.get(id=menu_id)
+            recipe_menu, created = RecipeMenu.objects.get_or_create(recipe=recipe)
+            recipe_menu.menu = menu
+            recipe_menu.save()
+
+        RecipeIngredient.objects.filter(recipe=recipe).delete()
+        for ingredient_name in ingredients_list:
+            ingredient = Ingredient.objects.get(name=ingredient_name)
+            RecipeIngredient.objects.create(recipe=recipe, ingredients=ingredient)
+
+        RecipeNotIncluded.objects.filter(recipe=recipe).delete()
+        for not_name in nots_list:
+            not_included = NotIncluded.objects.get(name=not_name)
+            RecipeNotIncluded.objects.create(recipe=recipe, other=not_included)
+
+        if recipe_nutrients_chart:
+            recipe_nutrients_chart.nutrients_chart.energy = data['energy']
+            recipe_nutrients_chart.nutrients_chart.calories = data['calories']
+            recipe_nutrients_chart.nutrients_chart.fat = data['fat']
+            recipe_nutrients_chart.nutrients_chart.saturated_fat = data['saturated_fat']
+            recipe_nutrients_chart.nutrients_chart.carbs = data['carbs']
+            recipe_nutrients_chart.nutrients_chart.sugar = data['sugar']
+            recipe_nutrients_chart.nutrients_chart.fiber = data['fiber']
+            recipe_nutrients_chart.nutrients_chart.protein = data['protein']
+            recipe_nutrients_chart.nutrients_chart.cholesterol = data['cholesterol']
+            recipe_nutrients_chart.nutrients_chart.sodium = data['sodium']
+            recipe_nutrients_chart.nutrients_chart.save()
+
+        return redirect('mealSuccessfullyEdited')
+
+    notIncluded = NotIncluded.objects.all()
+    ingredients = Ingredient.objects.all()
+    menus = Menu.objects.all()
+
+    context = {"notIncl": notIncluded, "ingredients": ingredients, "menus": menus, "recipe": recipe, "recipe_nutrients_chart": recipe_nutrients_chart.nutrients_chart if recipe_nutrients_chart else None}
+    return render(request, "EditRecipe.html", context=context)
+
+
+@login_required
+@staff_member_required
+def delete_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+
+    menu_instance = recipe.menus.first()
+
+    if request.method == "POST":
+        recipe.delete()
+        messages.success(request, "Recipe deleted successfully.")
+        if menu_instance:
+            return redirect('menu', menu_id=menu_instance.id)
+        else:
+            return redirect('menus')
+
+    return render(request, 'ConfirmRecipeDelete.html',
+                  {'recipe': recipe, 'menu_id': menu_instance.id if menu_instance else None})

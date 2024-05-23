@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Recipe</title>
+    <style>
+        .btnsize {
+            width: 40px;
+        }
+
+        .itm {
+            width: 25%;
+        }
+        .c-label{
+            width: 70%;
+        }
+        .form-field {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-field label {
+            margin-right: 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        #file-name {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+{% extends 'HomePage.html' %}
+{% load static %}
+{% block content %}
+   <div class="row">
+        <div class="col-lg-6 offset-3">
+            <div class="box-element" id="form-wrapper">
+                <form id="form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div id="recipe-info">
+                        <h4 style="text-align: center">RECIPE INFORMATION</h4>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="heading" value="{{ recipe.name }}" placeholder="Enter Heading..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="subheading" value="{{ recipe.subheading }}" placeholder="Enter Subheading..">
+                        </div>
+                        <div class="form-field">
+                            <label for="picture">Choose File</label>
+                            <input class="form-control" type="file" id="picture" name="picture" style="display:none;" onchange="updateFileName()">
+                            <span id="file-name">{{ recipe.pic.name }}</span>
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="difficulty" value="{{ recipe.difficulty }}" placeholder="Enter Difficulty Level..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="total_time" value="{{ recipe.total_time }}" placeholder="Enter Total Time..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="allergens" value="{{ recipe.allergens }}" placeholder="Enter Allergens..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="tags" value="{{ recipe.tags }}" placeholder="Enter Tags..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="price" value="{{ recipe.price }}" placeholder="Enter Price..">
+                        </div>
+                         <div class="form-field">
+                             <textarea id="desc" class="form-field" name="desc" rows="4" cols="50" placeholder="Enter Description..">{{ recipe.description }}</textarea>
+                        </div>
+                        <br>
+                    </div>
+                    <div id="nutri">
+                        <h4 style="text-align: center">NUTRITION CHART</h4>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="energy" value="{{ recipe_nutrients_chart.energy }}" placeholder="Energy..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="calories" value="{{ recipe_nutrients_chart.calories }}" placeholder="Calories..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="fat" value="{{ recipe_nutrients_chart.fat }}" placeholder="Fat..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="saturated_fat" value="{{ recipe_nutrients_chart.saturated_fat }}" placeholder="Saturated Fat..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="carbs" value="{{ recipe_nutrients_chart.carbs }}" placeholder="Carbs..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="sugar" value="{{ recipe_nutrients_chart.sugar }}" placeholder="Sugar..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="fiber" value="{{ recipe_nutrients_chart.fiber }}" placeholder="Fiber..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="protein" value="{{ recipe_nutrients_chart.protein }}" placeholder="Protein..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="cholesterol" value="{{ recipe_nutrients_chart.cholesterol }}" placeholder="Cholesterol..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="sodium" value="{{ recipe_nutrients_chart.sodium }}" placeholder="Sodium..">
+                        </div>
+                        <br>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <h4>Enter Ingredients: </h4>
+                        <hr>
+                        <div style="width: 100%" class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 g-4" style="width: 100%">
+                                {% for ingredient in ingredients %}
+                                <div class="itm">
+                                    <input type="checkbox" class="btn-check" name="add-recipe" id="{{ ingredient.name }}" {% if ingredient in recipe.ingredients.all %}checked{% endif %} autocomplete="off" value="{{ ingredient.name }}">
+                                    <label class="btn btn-outline-primary c-label" for="{{ ingredient.name }}">{{ ingredient.name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <h4>Enter Not Included: </h4>
+                        <hr>
+                        <div style="width: 100%" class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 g-4" style="width: 100%">
+                                {% for notIn in notIncl %}
+                                <div class="itm">
+                                    <input type="checkbox" class="btn-check" name="add-not" id="{{ notIn.name }}" {% if notIn in recipe.not_included.all %}checked{% endif %} autocomplete="off" value="{{ notIn.name }}">
+                                    <label class="btn btn-outline-primary c-label" for="{{ notIn.name }}">{{ notIn.name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: none">
+                        <input name="hid-ingredient" id="hid-ingredient" type="text" value="{{ recipe.ingredients.all|join:',' }}">
+                        <input name="hid-not" id="hid-not" type="text" value="{{ recipe.not_included.all|join:',' }}">
+                    </div>
+                    <br>
+                    <input type="hidden" name="menu_id" value="{{ recipe.menu.id }}">
+                    <button id="form-button" class="btn btn-success btn-block" type="submit">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function updateFileName() {
+        const pictureInput = document.getElementById('picture');
+        const fileNameLabel = document.getElementById('file-name');
+
+        const fileName = pictureInput.files[0] ? pictureInput.files[0].name : 'No file chosen';
+        fileNameLabel.textContent = fileName;
+    }
+
+    window.addEventListener('load', function() {
+        const currentFileName = '{{ recipe.pic.name }}';
+        const fileNameLabel = document.getElementById('file-name');
+        if (currentFileName) {
+            fileNameLabel.textContent = currentFileName;
+        }
+    });
+    </script>
+{% endblock %}
+</body>
+</html>

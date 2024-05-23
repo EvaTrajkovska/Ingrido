@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Recipe</title>
+    <style>
+        .btnsize {
+            width: 40px;
+        }
+
+        .itm {
+            width: 25%;
+        }
+        .c-label{
+            width: 70%;
+        }
+    </style>
+</head>
+<body>
+{% extends 'HomePage.html' %}
+{% load static %}
+{% block content %}
+   <div class="row">
+        <div class="col-lg-6 offset-3">
+            <div class="box-element" id="form-wrapper">
+                <form id="form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div id="recipe-info">
+                        <h4 style="text-align: center">RECIPE INFORMATION</h4>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="heading" placeholder="Enter Heading..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="subheading" placeholder="Enter Subheading..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="file" name="picture" placeholder="Add Picture..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="difficulty" placeholder="Enter Difficulty Level..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="total_time" placeholder="Enter Total Time..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="allergens" placeholder="Enter Allergens..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="tags" placeholder="Enter Tags..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="price" placeholder="Enter Price..">
+                        </div>
+                         <div class="form-field">
+                             <label for="desc"></label>
+                             <textarea id="desc" class="form-field" name="desc" rows="4" cols="50" placeholder="Enter Description.."></textarea>
+                        </div>
+                        <br>
+                    </div>
+                    <div id="nutri">
+                        <h4 style="text-align: center">NUTRITION CHART</h4>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="energy" placeholder="Energy..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="calories" placeholder="Calories..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="fat" placeholder="Fat..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="saturated_fat" placeholder="Saturated Fat..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="carbs" placeholder="Carbs..">
+                        </div>
+                        <div class="form-field">
+                            <input class="form-control" type="text" name="sugar" placeholder="Sugar..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="fiber" placeholder="Fiber..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="protein" placeholder="Protein..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="cholesterol" placeholder="Cholesterol..">
+                        </div>
+                         <div class="form-field">
+                            <input class="form-control" type="text" name="sodium" placeholder="Sodium..">
+                        </div>
+                        <br>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <h4>Enter Ingredients: </h4>
+                        <hr>
+                        <div style="width: 100%" class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 g-4" style="width: 100%">
+                                {% for ingredient in ingredients %}
+                                <div class="itm">
+                                    <input type="checkbox" class="btn-check" name="add-recipe" id="{{ ingredient.name }}" autocomplete="off" value="{{ ingredient.name }}">
+                                    <label class="btn btn-outline-primary c-label" for="{{ ingredient.name }}">{{ ingredient.name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <h4>Enter Not Included: </h4>
+                        <hr>
+                        <div style="width: 100%" class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 g-4" style="width: 100%">
+                                {% for notIn in notIncl %}
+                                <div class="itm">
+                                    <input type="checkbox" class="btn-check" name="add-not" id="{{ notIn.name }}" autocomplete="off" value="{{ notIn.name }}">
+                                    <label class="btn btn-outline-primary c-label" for="{{ notIn.name }}">{{ notIn.name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: none">
+                        <input name="hid-ingredient" id="hid-ingredient" type="text">
+                        <input name="hid-not" id="hid-not" type="text">
+                    </div>
+                    <br>
+                    <button id="form-button" class="btn btn-success btn-block" type="submit">Save Recipe</button>
+                </form>
+            </div>
+        </div>
+   </div>
+
+    <script>
+    let array_reci = [];
+    let array_not = [];
+    const hidd_ingredient = document.getElementById('hid-ingredient');
+    const hidd_not = document.getElementById('hid-not');
+
+    let selectedRecipe = document.querySelectorAll('input[name="add-recipe"]');
+    for (let i = 0; i < selectedRecipe.length; i++) {
+        selectedRecipe[i].addEventListener('click', function () {
+            let tmp = selectedRecipe[i].value;
+            if (array_reci.includes(tmp)) {
+                array_reci.splice(array_reci.indexOf(tmp), 1);
+            } else {
+                array_reci.push(tmp);
+            }
+            hidd_ingredient.value = array_reci.join(',');
+        });
+    }
+
+    let selectedNots = document.querySelectorAll('input[name="add-not"]');
+    for (let i = 0; i < selectedNots.length; i++) {
+        selectedNots[i].addEventListener('click', function () {
+            let tmp = selectedNots[i].value;
+            if (array_not.includes(tmp)) {
+                array_not.splice(array_not.indexOf(tmp), 1);
+            } else {
+                array_not.push(tmp);
+            }
+            hidd_not.value = array_not.join(',');
+        });
+    }
+    </script>
+
+{% endblock %}
+</body>
+</html>
