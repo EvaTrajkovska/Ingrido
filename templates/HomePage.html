@@ -155,7 +155,7 @@
 <div class="container" style="padding-top: 20px">
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for menu in menus %}
-            <div class="col">
+            <div class="col" style="width: auto; margin-right: -10px">
                 <a href="{% url 'menu' menu.id %}">
                     <div class="card h-100">
                         {% if menu.img %}
