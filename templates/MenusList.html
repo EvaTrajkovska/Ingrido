@@ -14,15 +14,15 @@
 {% block content %}
     <div class="container" style="padding-top: 20px">
         {% if request.user.is_authenticated and request.user.is_staff %}
-            <a href="{% url 'add_menu' %}" class="btn btn-primary">Add Menu</a>
+            <a href="{% url 'add_menu' %}" class="btn btn-primary" style="margin: auto; padding-left: 30px; padding-right: 30px; margin-bottom: 30px">Add Menu</a>
         {% endif %}
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for menu in menus %}
-                <div class="col">
+                <div class="col" style="width: auto; margin-left: -10px;">
                     <a href="{% url 'menu' menu.id %}">
-                        <div class="card h-100">
+                        <div class="card">
                             {% if menu.img %}
-                                <img src="{{ menu.img.url }}" data-product="{{ menu.id }}" class="card-img-top menu" alt="..." style="height: 250px; width: 350px">
+                                <img src="{{ menu.img.url }}" class="card-img-top menu" alt="..." style="height: 250px; width: 350px">
                             {% else %}
                                 <img src="{% static 'placeholder.jpg' %}" class="card-img-top menu" alt="Placeholder Image" style="height: 250px; width: 350px">
                             {% endif %}

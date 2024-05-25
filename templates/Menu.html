@@ -26,8 +26,6 @@
         }
         .card{
             outline: red 10px;
-            margin-left: 50px;
-            margin-right: 50px;
         }
 
     </style>
@@ -42,11 +40,11 @@
 <br>
     <div class="container" style="padding-top: 20px">
         {% if request.user.is_authenticated and request.user.is_staff %}
-            <a href="{% url 'add_recipe' menu.id %}" class="btn btn-primary mb-3">Add Recipe</a>
+            <a href="{% url 'add_recipe' menu.id %}" class="btn btn-primary mb-3" style=" margin: auto; padding-left: 30px; padding-right: 30px">Add Recipe</a>
         {% endif %}
         <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for recipe in recipes %}
-            <div class="col">
+            <div class="col" style="width: auto">
                 <div class="card h-100" style="border:none">
                     <img src="{{ recipe.recipe.pic.url }}"
                          class="card-img-top" alt="..." style="height: 230px; width: 100%">

@@ -40,9 +40,10 @@
 .card {
     background: unset !important;
     outline: 10px;
-    margin-left: 50px;
-    margin-right: 50px;
+    margin-left: 35px;
+    margin-right: 35px;
 }
+
 .card-body {
      background: unset !important;
 }
