@@ -157,7 +157,7 @@
                 <a href="{% url 'menu' menu.id %}">
                     <div class="card h-100">
                         {% if menu.img %}
-                            <img src="{{ menu.img.url }}" data-product="{{ menu.id }}" class="card-img-top menu" alt="..." style="height: 250px; width: 350px">
+                            <img src="{{ menu.img.url }}" class="card-img-top menu" alt="..." style="height: 250px; width: 350px">
                         {% else %}
                             <img src="{% static 'placeholder.jpg' %}" class="card-img-top menu" alt="Placeholder Image" style="height: 250px; width: 350px">
                         {% endif %}
