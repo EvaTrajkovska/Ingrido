@@ -103,7 +103,9 @@ def menu(request, menu_id):
 
 def go_to_detailed_view(request):
     data = json.loads(request.body)
+    print("Data-> ", data)
     productId = data['productId']
+    print(productId)
     request.session['productId'] = productId
     return JsonResponse("Got to detail page", safe=False)
 
@@ -116,6 +118,7 @@ def go_to_detailed_view_menu(request):
 
 
 def detailedView(request):
+    print("Req-> ", request.session['productId'])
     productId = request.session['productId']
     product = Recipe.objects.get(id=productId)
     ingr = RecipeIngredient.objects.filter(recipe=product).all()
@@ -555,13 +558,16 @@ def edit_recipe(request, recipe_id):
 
     if request.method == 'POST':
         data = request.POST
+        print("Data", data)
         pic = request.FILES.get('picture')
 
-        ingredients = data['hid-ingredient']
-        nots = data['hid-not']
+        ingredients = data['add-recipe']
+        nots = data['add-not']
 
         ingredients_list = split(ingredients)
         nots_list = split(nots)
+        print("Ingr-> ",ingredients)
+        print("NOts-> ",nots)
 
         recipe.name = data['heading']
         recipe.subheading = data['subheading']
