@@ -112,7 +112,9 @@ def go_to_detailed_view(request):
 
 def go_to_detailed_view_menu(request):
     data = json.loads(request.body)
+    print("Data-> ", data)
     menuId = data['menuId']
+    print("Menu Id-> ", menuId)
     request.session['menuId'] = menuId
     return JsonResponse("Got to detail page", safe=False)
 
@@ -354,12 +356,14 @@ def successfully_edited_menu(request):
     return render(request, "SuccessfullyEditedMenu.html")
 
 
-def meal_successfully_added(request):
-    return render(request, 'MealSuccessfullyAdded.html')
+def meal_successfully_added(request, menu_id):
+    menu = get_object_or_404(Menu, pk=menu_id)
+    return render(request, 'MealSuccessfullyAdded.html', {'menu': menu})
 
 
-def meal_successfully_edited(request):
-    return render(request, 'MealSuccessfullyEdited.html')
+def meal_successfully_edited(request,menu_id):
+    menu = get_object_or_404(Menu, pk=menu_id)
+    return render(request, 'MealSuccessfullyEdited.html', {'menu': menu})
 
 
 def login_view(request):
@@ -473,6 +477,8 @@ def add_recipe(request, menu_id):
     if not request.user.is_superuser:
         return render(request, 'AccessDeniedPage.html')
 
+    print("Menu->", menu_id)
+
     def split(value):
         return value.split(',')
 
@@ -535,7 +541,7 @@ def add_recipe(request, menu_id):
             nutrients_chart=nutrient_chart
         )
 
-        return redirect('mealSuccessfullyAdded')
+        return redirect('mealSuccessfullyAdded', menu_id=menu_id)
 
     notIncluded = NotIncluded.objects.all()
     ingredients = Ingredient.objects.all()
@@ -558,8 +564,9 @@ def edit_recipe(request, recipe_id):
 
     if request.method == 'POST':
         data = request.POST
-        print("Data", data)
+        print("DATA -> ", data)
         pic = request.FILES.get('picture')
+        menu_id = request.GET.get('menu')
 
         ingredients = data['add-recipe']
         nots = data['add-not']
@@ -583,7 +590,7 @@ def edit_recipe(request, recipe_id):
 
         recipe.save()
 
-        menu_id = data.get('menu_id')
+        print("Menu Id->", menu_id)
 
         if menu_id:
             menu = Menu.objects.get(id=menu_id)
@@ -614,7 +621,7 @@ def edit_recipe(request, recipe_id):
             recipe_nutrients_chart.nutrients_chart.sodium = data['sodium']
             recipe_nutrients_chart.nutrients_chart.save()
 
-        return redirect('mealSuccessfullyEdited')
+        return redirect('mealSuccessfullyEdited',menu_id=menu_id)
 
     notIncluded = NotIncluded.objects.all()
     ingredients = Ingredient.objects.all()

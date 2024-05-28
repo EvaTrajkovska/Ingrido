@@ -47,7 +47,7 @@
             <div class="col" style="width: auto">
                 <div class="card h-100" style="border:none">
                     <img src="{{ recipe.recipe.pic.url }}"
-                         class="card-img-top" alt="..." style="height: 230px; width: 100%">
+                         class="card-img-top" alt="..." style="height: 230px; width: 330px">
                     <div class="card-body" style="background: #FAF1E6">
                         <h5 class="card-title" style="color: #064420;font-family: 'Eras Bold ITC',serif ;
                                         font-style: italic; font-weight: bold; font-size: 25px">{{ recipe.recipe.name }}</h5>
@@ -56,7 +56,7 @@
                         <p class="card-text" style="color: black; font-weight: lighter; display: inline-flex; border-left: 1px black solid; padding-left: 10px">{{ recipe.recipe.difficulty}} </p>
                         {% if request.user.is_authenticated and request.user.is_staff %}
                                 <div>
-                                    <a href="{% url 'edit_recipe' recipe.id %}" class="btn btn-secondary">Edit</a>
+                                    <a href="{% url 'edit_recipe' recipe.id %}?menu={{ menu.id }}" class="btn btn-secondary">Edit</a>
                                     <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-danger">Delete</a>
                                 </div>
                         {% endif %}
