@@ -37,9 +37,9 @@
     var lightModeHrefValue = '{% static "css/light.css" %}';
     var toggleStatus = localStorage.getItem('toggleStatus');
 
-    if (!toggleStatus) {
-        toggleStatus = 'light';
-    }
+<!--    if (!toggleStatus) {-->
+<!--        toggleStatus = 'light';-->
+<!--    }-->
 
     if (toggleStatus === 'dark') {
         elementWithStyleClass.attr('href', darkModeHrefValue);

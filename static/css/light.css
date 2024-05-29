@@ -130,7 +130,7 @@ input:checked + .slider:before {
 }
 
 .fa-solid.fa-sun {
-    left: 10px;
+    left: 3px;
     opacity: 0; /* Hide the sun icon by default in light mode */
 }
 

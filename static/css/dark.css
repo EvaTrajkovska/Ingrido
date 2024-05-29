@@ -139,7 +139,7 @@ input:checked + .slider:before {
 }
 
 .fa-solid.fa-sun {
-  left: 10px;
+  left: 3px;
   opacity: 1;
 }
 
@@ -149,7 +149,9 @@ input:checked + .slider:before {
 }
 
 input:checked + .slider .fa-solid.fa-sun {
-    margin-left: 7px;
+    margin-left: 5px;
+    top: 12px;
+    position: relative;
   opacity: 1;
 }
 
